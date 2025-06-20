@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+
+  <title>Dimensionnement Fosse & Épandage</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f3f3;
+      display: flex;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .container {
+      background-color: #eee;
+      padding: 2rem;
+      border-radius: 2rem;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    input, select, button {
+      display: block;
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 0.6rem;
+      border-radius: 0.5rem;
+      border: 1px solid #aaa;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .button-row button {
+      flex: 1;
+      margin: 0 0.3rem;
+    }
+
+    .result-box {
+      background: white;
+      padding: 1rem;
+      border-radius: 1rem;
+      border: 1px solid #ccc;
+      min-height: 120px;
+    }
+
+    h3 {
+      margin-top: 1.5rem;
+      font-size: 1.1rem;
+    }
+	.en-tete {
+	  font-size: 20px;
+	  text-align: center;
+	  margin-bottom: 30px;
+	}
+  </style>
+</head>
+<body>
+	<script>
+	  if ('serviceWorker' in navigator) {
+		navigator.serviceWorker.register('service-worker.js')
+		  .then(reg => console.log("Service Worker enregistré ✔"))
+		  .catch(err => console.error("Échec Service Worker ❌", err));
+	  }
+	</script>
+  <div class="container">
+    <div class="en-tete">
+		<span>Calculette ANC de Marion</span>
+	</div>
+    <input type="number" id="nbPP" placeholder="Nombre de pièces principales (PP)" />
+    <input type="number" id="nbOccupants" placeholder="Nombre d’occupants" />
+    <select id="typeMaison">
+      <option value="principale">Résidence principale</option>
+      <option value="secondaire">Résidence secondaire</option>
+    </select>
+    <input type="number" id="volumeFosse" placeholder="Volume de la fosse (si connu, sinon laisser vide)" />
+
+    <h3>Tests de perméabilité (K) – à partir des données terrain :</h3>
+
+    <label><strong>Test Porchet 1</strong></label>
+    <input type="number" id="eau1" placeholder="Quantité d'eau infiltrée (L)" />
+    <input type="number" id="temps1" placeholder="Durée du test (min)" />
+
+    <label><strong>Test Porchet 2</strong></label>
+    <input type="number" id="eau2" placeholder="Quantité d'eau infiltrée (L)" />
+    <input type="number" id="temps2" placeholder="Durée du test (min)" />
+
+    <label><strong>Test Porchet 3</strong></label>
+    <input type="number" id="eau3" placeholder="Quantité d'eau infiltrée (L)" />
+    <input type="number" id="temps3" placeholder="Durée du test (min)" />
+
+    <div class="button-row">
+      <button onclick="calculerDimensionComplet()">Calcul complet</button>
+      <button onclick="calculerVidange()">Fréquence Vidange</button>
+      <button disabled>À venir</button>
+    </div>
+
+    <div class="result-box" id="resultat">
+      <!-- Résultat affiché ici -->
+    </div>
+  </div>
+
+  <script>
+    function calculerDimensionComplet() {
+      const nbPP = parseInt(document.getElementById("nbPP").value);
+      const occupants = parseInt(document.getElementById("nbOccupants").value);
+      if (isNaN(nbPP) || nbPP < 1 || isNaN(occupants) || occupants < 1) {
+        afficher("Veuillez renseigner un nombre de pièces principales et d'occupants valides.");
+        return;
+      }
+
+      // Volume de fosse selon DTU 64.1
+      let volumeFosse = nbPP <= 5 ? 3 : 3 + (nbPP - 5) * 1;
+
+      // Surface fixe du trou en mm² → conversion en cm²
+      const surface_cm2 = 552.64;
+
+      // Récupérer les données des 3 tests
+      const k1 = calculK("eau1", "temps1", surface_cm2);
+      const k2 = calculK("eau2", "temps2", surface_cm2);
+      const k3 = calculK("eau3", "temps3", surface_cm2);
+
+      if (isNaN(k1) || isNaN(k2) || isNaN(k3)) {
+        afficher("Merci de compléter correctement les 3 tests Porchet.");
+        return;
+      }
+
+      const kMoyen = (k1 + k2 + k3) / 3;
+
+      // Calcul surface d’épandage
+      const Q = occupants * 150; // L/j
+      let surface = Q / kMoyen;
+
+	// Calcul du coefficient variable
+	let coef_F = Math.min(5, Math.max(1, 40 / surface)); // 60 est une constante à ajuster
+	let coef_MS = coef_F * 0.6; // par exemple moitié pour MS
+
+	// Application
+	let surface_F = Math.ceil(surface * coef_F / 5) * 5;
+	let surface_MS = Math.ceil(surface * coef_MS / 5) * 5;
+
+	  
+
+      let message = `
+		👉 Volume minimal recommandé de la fosse : <strong>${volumeFosse.toFixed(1)} m³</strong><br>
+		k1 = ${k1.toFixed(1)} mm/h, k2 = ${k2.toFixed(1)} mm/h, k3 = ${k3.toFixed(1)} mm/h<br>
+		👉 K moyen (perméabilité) : <strong>${kMoyen.toFixed(1)} mm/h</strong><br>`;
+
+		if (kMoyen < 15 || kMoyen > 500) {
+		  message += `⚠️ <strong>K moyen hors plage raisonnable. MS/FS obligatoire.</strong><br>`;
+		}
+
+		message += `
+		👉 Surface d’épandage minimale : <strong>${surface_F.toFixed(1)} m²</strong> en F<br>
+		👉 Surface d’épandage minimale : <strong>${surface_MS.toFixed(1)} m²</strong> en MS/FC`;
+
+		afficher(message);
+
+    }
+	
+
+    function calculK(idEau, idTemps, surface_mm2) {
+	  const eau = parseFloat(document.getElementById(idEau).value);
+	  const temps = parseFloat(document.getElementById(idTemps).value);
+	  if (isNaN(eau) || eau <= 0 || isNaN(temps) || temps <= 0) return NaN;
+
+	  const K =((eau * 1_000_000) / (surface_mm2 * (temps / 60))) / 100; // K en mm/h
+	  return K;
+	}
+
+    function calculerVidange() {
+      const volume = parseFloat(document.getElementById("volumeFosse").value);
+      const occupants = parseInt(document.getElementById("nbOccupants").value);
+      const typeMaison = document.getElementById("typeMaison").value;
+
+      if (isNaN(volume) || volume <= 0 || isNaN(occupants) || occupants <= 0) {
+        afficher("Veuillez indiquer un volume de fosse et un nombre d'occupants valides.");
+        return;
+      }
+
+      let frequence = 4;
+      if (typeMaison === "secondaire") frequence += 1;
+      if (occupants > 5) frequence -= 1;
+      frequence = Math.max(1, Math.min(6, frequence));
+
+      afficher(`👉 Vidange recommandée tous les <strong>${frequence} ans</strong> pour un usage ${typeMaison}.`);
+    }
+
+    function afficher(message) {
+      document.getElementById("resultat").innerHTML = message;
+    }
+  </script>
+
+</body>
+</html>

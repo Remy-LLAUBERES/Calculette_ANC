@@ -1,0 +1,18 @@
+{
+  "name": "Calculette ANC de Marion",
+  "short_name": "Calculette ANC",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f3f3f3",
+  "theme_color": "#2e7d32",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "Logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+
+  ]
+}
+
