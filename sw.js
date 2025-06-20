@@ -3,11 +3,11 @@ self.addEventListener('install', function(e) {
     caches.open('anc-cache').then(function(cache) {
       return cache.addAll([
         "./",
-	    "./index.html",
-	    "./manifest.json",
-	    "./Logo.ico"
+        "./index.html",
+        "./manifest.json",
+        "./Logo.png"
       ]);
-    })
+    }).catch(err => console.error("Erreur de mise en cache", err))
   );
 });
 
@@ -18,4 +18,3 @@ self.addEventListener('fetch', function(e) {
     })
   );
 });
-.catch(err => console.error("Erreur de mise en cache", err));
