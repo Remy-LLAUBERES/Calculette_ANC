@@ -5,7 +5,7 @@ self.addEventListener('install', function(e) {
         "./",
         "./index.html",
         "./manifest.json",
-        "./Logo.png"
+        "./icon.png"
       ]);
     }).catch(err => console.error("Erreur de mise en cache", err))
   );
