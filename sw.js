@@ -5,7 +5,7 @@ self.addEventListener('install', function(e) {
         "./",
 	    "./index.html",
 	    "./manifest.json",
-	    "./Logo.ico",
+	    "./Logo.ico"
       ]);
     })
   );
