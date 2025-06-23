@@ -156,7 +156,7 @@
 
       // Calcul surface d’épandage
       const Q = nbPP * 150; // L/j
-      let surface = Q / kMoyen;
+      let surface = Q / CHA;
 
 	// Calcul du coefficient variable
 	let coef_F = Math.min(5, Math.max(1, 40 / surface)); // 60 est une constante à ajuster
