@@ -171,8 +171,8 @@
       let message = `
 		👉 Volume minimal recommandé de la fosse : <strong>${volumeFosse.toFixed(1)} m³</strong><br>
 		k1 = ${k1.toFixed(1)} mm/h, k2 = ${k2.toFixed(1)} mm/h, k3 = ${k3.toFixed(1)} mm/h<br>
-		👉 K moyen (perméabilité) : <strong>${kMoyen.toFixed(1)} mm/h</strong><br>;
-		👉 CHA : <strong>${CHA.toFixed(1)} L/J.m²</strong><br>;
+		👉 K moyen (perméabilité) : <strong>${kMoyen.toFixed(1)} mm/h</strong><br>
+		👉 CHA : <strong>${CHA.toFixed(1)} L/J.m²</strong><br>
 	    	${CHA_commentaire ? CHA_commentaire + "<br>" : ""}<br>`;
 		if (kMoyen < 15 || kMoyen > 500) {
 		  message += `⚠️ <strong>K moyen hors plage raisonnable. MS/FS obligatoire.</strong><br>`;
@@ -182,7 +182,7 @@
 		👉 Surface d’épandage minimale : <strong>${surface_F.toFixed(1)} m²</strong> en F<br>
 		👉 Surface d’épandage minimale : <strong>${surface_MS.toFixed(1)} m²</strong> en MS/FC`;
 		message += `
-  		👉 Volume de ballast minimal : <strong>${vol_ballast.toFixed(1)} m³</strong> en MS/FC`
+  		👉 Volume de ballast minimal : <strong>${vol_ballast.toFixed(1)} m³</strong>`
 		afficher(message);
 
     }
