@@ -1,4 +1,4 @@
-const CACHE_NAME = "anc-cache-v2"; // 🔁 Change ce nom à chaque mise à jour
+const CACHE_NAME = "anc-cache-v3"; // 🔁 Mets à jour à chaque version
 
 const FILES_TO_CACHE = [
   "./",
@@ -7,47 +7,46 @@ const FILES_TO_CACHE = [
   "./icon.png"
 ];
 
-// 📦 Installation et mise en cache des fichiers
-self.addEventListener('install', function(e) {
-  console.log("[ServiceWorker] Installation");
-  e.waitUntil(
+self.addEventListener('install', event => {
+  event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => {
-        return cache.addAll(FILES_TO_CACHE);
-      })
+      .then(cache => cache.addAll(FILES_TO_CACHE))
       .catch(err => console.error("Erreur de mise en cache", err))
   );
-  self.skipWaiting(); // permet une prise en compte immédiate après install
+  self.skipWaiting();
 });
 
-// 🧹 Suppression des anciens caches
-self.addEventListener('activate', function(e) {
-  console.log("[ServiceWorker] Activation");
-  e.waitUntil(
-    caches.keys().then(keyList =>
-      Promise.all(
-        keyList.map(key => {
-          if (key !== CACHE_NAME) {
-            console.log("[ServiceWorker] Suppression du cache : ", key);
-            return caches.delete(key);
-          }
-        })
-      )
-    )
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(cacheNames => Promise.all(
+      cacheNames.map(key => {
+        if (key !== CACHE_NAME) {
+          return caches.delete(key);
+        }
+      })
+    ))
   );
-  self.clients.claim(); // contrôle immédiat des pages ouvertes
+
+  // ✅ Affiche une notification si autorisé
+  self.clients.matchAll().then(clients => {
+    if (clients && clients.length) {
+      self.registration.showNotification("✅ Mise à jour disponible", {
+        body: "La Calculette ANC a été mise à jour et est prête à l'emploi.",
+        icon: "icon.png",
+        badge: "icon.png"
+      });
+    }
+  });
+
+  self.clients.claim();
 });
 
-// 🌐 Réponse aux requêtes réseau
-self.addEventListener('fetch', function(e) {
-  e.respondWith(
-    caches.match(e.request).then(response => {
-      return response || fetch(e.request);
-    })
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request).then(resp => resp || fetch(event.request))
   );
 });
 
-// 💬 Communication avec la page pour forcer skipWaiting si besoin
 self.addEventListener("message", event => {
   if (event.data.action === "skipWaiting") {
     self.skipWaiting();
