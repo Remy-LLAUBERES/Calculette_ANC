@@ -150,8 +150,8 @@
 	} else if (kMoyen < 250) {
 	  CHA = (0.047 * kMoyen)+18;
 	} else {
-	  CHA = 0;
-	  CHA_commentaire = "⚠️ Sol très filtrant — attention au traitement bactérien.";
+	  CHA = (0.047 * kMoyen)+18;
+	  CHA_commentaire = "⚠️ Sol très filtrant k>250— attention au traitement bactérien.";
 	}
 
       // Calcul surface d’épandage
@@ -165,7 +165,8 @@
 	// Application
 	let surface_F = Math.ceil(surface * coef_F);
 	let surface_MS = Math.ceil(surface * coef_MS);
-	let vol_ballast = 0.4 * surface_F;
+	let vol_ballast_F = 0.4 * surface_F;
+	let vol_ballast_MS = 0.4 * surface_MS;
 	  
 
       let message = `
@@ -181,8 +182,9 @@
 		message += `
 		👉 Surface d’épandage minimale : <strong>${surface_F.toFixed(1)} m²</strong> en F<br>
 		👉 Surface d’épandage minimale : <strong>${surface_MS.toFixed(1)} m²</strong> en MS/FC`;
-		message += `
-  		👉 Volume de ballast minimal : <strong>${vol_ballast.toFixed(1)} m³</strong>`
+		message += <br>`
+  		👉 Volume de ballast minimal : <strong>${vol_ballast_F.toFixed(1)} m³ en F</strong><br>
+  		👉 Volume de ballast minimal : <strong>${vol_ballast_MS.toFixed(1)} m³ en MS/FC</strong>`
 		afficher(message);
 
     }
