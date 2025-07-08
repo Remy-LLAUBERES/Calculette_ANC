@@ -1,4 +1,4 @@
-const CACHE_NAME = "anc-cache-v3"; // 🔁 Mets à jour à chaque version
+const CACHE_NAME = "anc-cache-v4"; // 🔁 Mets à jour à chaque version
 
 const FILES_TO_CACHE = [
   "./",
