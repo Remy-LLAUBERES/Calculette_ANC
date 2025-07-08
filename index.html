@@ -75,6 +75,19 @@
 		  .then(reg => console.log("Service Worker enregistré ✔"))
 		  .catch(err => console.error("Échec Service Worker ❌", err));
 	  }
+	if ("Notification" in window && navigator.serviceWorker) {
+	    Notification.requestPermission().then(permission => {
+	      if (permission === "granted") {
+	        navigator.serviceWorker.ready.then(registration => {
+	          registration.showNotification("Calculette ANC installée avec succès 🎉", {
+	            body: "L'application est prête à être utilisée même hors connexion.",
+	            icon: "icon.png",
+	            badge: "icon.png"
+	          });
+	        });
+	      }
+	    });
+	  }
 	</script>
   <div class="container">
     <div class="en-tete">
