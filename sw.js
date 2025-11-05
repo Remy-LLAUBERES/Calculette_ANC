@@ -1,4 +1,4 @@
-const CACHE_NAME = "anc-cache-v5"; // 🔁 Mets à jour à chaque version
+const CACHE_NAME = "anc-cache-v6"; // 🔁 Mets à jour à chaque version
 
 const FILES_TO_CACHE = [
   "./",
@@ -7,7 +7,15 @@ const FILES_TO_CACHE = [
   "./icon.png",
   "./mentions-legales.html",
   "./politique-confidentialite.html",
-  "./cgu.html"
+  "./cgu.html",
+  "./README.md",
+  "./TODO_COMMERCIALISATION.md",
+  "./DEMARRAGE_RAPIDE.md",
+  "./GITHUB_PAGES_SETUP.md",
+  "./DESCRIPTIONS_MARKETING.md",
+  "./GUIDE_VISUELS.md",
+  "./APK_GENERATION_GUIDE.md",
+  "./.well-known/assetlinks.json"
 ];
 
 self.addEventListener('install', event => {

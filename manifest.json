@@ -1,17 +1,44 @@
 {
-  "name": "Calculette ANC de Marion",
+  "name": "Calculette ANC - Assainissement Non Collectif",
   "short_name": "Calculette ANC",
+  "description": "Outil professionnel pour dimensionner fosses septiques et systèmes d'épandage selon DTU 64.1. Calculs de perméabilité, surfaces d'épandage et fréquence de vidange.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f3f3f3",
   "theme_color": "#2e7d32",
   "orientation": "portrait",
+  "categories": ["productivity", "utilities", "business"],
+  "lang": "fr-FR",
+  "dir": "ltr",
   "icons": [
     {
       "src": "icon.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
     }
-  ]
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/screenshot-1.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "label": "Écran principal - Formulaire de calcul"
+    },
+    {
+      "src": "screenshots/screenshot-2.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "label": "Résultats de dimensionnement"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
 }
