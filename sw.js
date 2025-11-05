@@ -1,10 +1,13 @@
-const CACHE_NAME = "anc-cache-v4"; // 🔁 Mets à jour à chaque version
+const CACHE_NAME = "anc-cache-v5"; // 🔁 Mets à jour à chaque version
 
 const FILES_TO_CACHE = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./icon.png"
+  "./icon.png",
+  "./mentions-legales.html",
+  "./politique-confidentialite.html",
+  "./cgu.html"
 ];
 
 self.addEventListener('install', event => {
