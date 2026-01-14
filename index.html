@@ -214,7 +214,7 @@
 	}
 
     function calculerVidange() {
-  const volume = parseFloat(document.getElementById("volumeFosse").value);
+  const volume = parseFloat(document.getElementById("volumeFosse").value) * 1000;
   const occupants = parseInt(document.getElementById("nbOccupants").value);
   const typeMaison = document.getElementById("typeMaison").value;
 
@@ -250,6 +250,7 @@
 
 </body>
 </html>
+
 
 
 
