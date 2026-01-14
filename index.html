@@ -214,22 +214,34 @@
 	}
 
     function calculerVidange() {
-      const volume = parseFloat(document.getElementById("volumeFosse").value);
-      const occupants = parseInt(document.getElementById("nbOccupants").value);
-      const typeMaison = document.getElementById("typeMaison").value;
+  const volume = parseFloat(document.getElementById("volumeFosse").value);
+  const occupants = parseInt(document.getElementById("nbOccupants").value);
+  const typeMaison = document.getElementById("typeMaison").value;
 
-      if (isNaN(volume) || volume <= 0 || isNaN(occupants) || occupants <= 0) {
-        afficher("Veuillez indiquer un volume de fosse et un nombre d'occupants valides.");
-        return;
-      }
+  if (isNaN(volume) || volume <= 0 || isNaN(occupants) || occupants <= 0) {
+    afficher("Veuillez indiquer un volume de fosse et un nombre d'occupants valides.");
+    return;
+  }
 
-      let frequence = 4;
-      if (typeMaison === "secondaire") frequence += 1;
-      if (occupants > 5) frequence -= 1;
-      frequence = Math.max(1, Math.min(6, frequence));
+  // Volume utile disponible pour les boues (50% du volume total selon l'arrêté)
+  const volumeBoues = volume * 0.5;
 
-      afficher(`👉 Vidange recommandée tous les <strong>${frequence} ans</strong> pour un usage ${typeMaison}.`);
-    }
+  // Production moyenne de boues par personne et par an (litres)
+  // Valeur réglementaire : environ 50 à 60 L/pers/an
+  const productionBouesAnnuelle = typeMaison === "secondaire" ? 25 : 50; // Divisé par 2 pour résidence secondaire
+
+  // Volume total de boues produit par an
+  const bouesAnnuelles = occupants * productionBouesAnnuelle;
+
+  // Fréquence de vidange (en années)
+  let frequence = volumeBoues / bouesAnnuelles;
+
+  // Arrondi et limites réglementaires (min 3 ans, max 6 ans)
+  frequence = Math.round(frequence);
+  frequence = Math.max(3, Math.min(6, frequence));
+
+  afficher(`👉 Vidange recommandée tous les <strong>${frequence} ans</strong> pour un usage ${typeMaison}.`);
+}
 
     function afficher(message) {
       document.getElementById("resultat").innerHTML = message;
@@ -238,6 +250,7 @@
 
 </body>
 </html>
+
 
 
 
