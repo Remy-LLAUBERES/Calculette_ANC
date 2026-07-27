@@ -41,9 +41,16 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-self.addEventListener('fetch', event => {
+// Requêtes : réseau d'abord, cache en secours si hors-ligne
+self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then(resp => resp || fetch(event.request))
+    fetch(event.request)
+      .then((reponse) => {
+        const copie = reponse.clone();               // on rafraîchit le cache au passage
+        caches.open(CACHE_NAME).then((c) => c.put(event.request, copie));
+        return reponse;
+      })
+      .catch(() => caches.match(event.request))       // hors-ligne → on sert le cache
   );
 });
 
